@@ -1,19 +1,38 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import { routes } from './routes';
+import { DataSource } from "typeorm"
+dotenv.config();
 
-const app = express();
 
-app.use(express.json());
-app.use(cors({
-    origin: ["http://localhost:3000"]
-}));
+const AppDataSource = new DataSource({
+    type: "mysql",
+    host: process.env.DB_HOST,
+    port: 3306,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    entities: [
+        "src/entity/*.ts"
+    ],
+    synchronize: true,
+    logging: false
+});
 
-routes(app);
-// app.get('/', (req: Request, res: Response) => {
-//     res.send('okkk');
-// });
+AppDataSource.initialize()
+    .then(() => {
+        const app = express();
 
-app.listen(8000, () => {
-    console.log('listenig to port 8000');
-}); 
+        app.use(express.json());
+        app.use(cors({
+            origin: ["http://localhost:3000"]
+        }));
+
+        routes(app);
+
+        app.listen(8000, () => {
+            console.log('listenig to port 8000');
+        });
+    })
+    .catch((error) => console.log(error))

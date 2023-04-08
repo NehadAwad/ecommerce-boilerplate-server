@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { RegisterValidation } from "../validation/register.validation";
 import { User } from "../entity/user.entity";
 import bcyptjs from "bcryptjs";
+import { sign, verify, JwtPayload } from "jsonwebtoken";
 
 
 
@@ -50,8 +51,36 @@ export const Login = async (req: Request, res: Response) => {
         })
     }
 
-    const {password , ...data} = user;
+    const token = sign({ id: user.id }, process.env.JWT_SECRET);
 
-    console.log(data)
-    res.send(data)
+    res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    })
+
+    res.send({
+        message: 'success'
+    }) 
 }
+
+export const AuthenticatedUser =async (req: Request, res: Response) => {
+    const jwt = req.cookies['jwt'];
+    
+    const payload = verify(jwt, process.env.JWT_SECRET);
+
+    const jwtPayload = payload as JwtPayload;
+    console.log(jwtPayload.id);
+    if(!payload) {
+        return res.status(404).send({
+            message: 'unauthenticated'
+        })
+    }
+    
+    const user = await User.findOne({
+        where: { id: jwtPayload.id }
+    });
+    
+    const { password, ...data} = user;
+
+    res.send(data);
+} 

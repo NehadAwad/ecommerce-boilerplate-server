@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { routes } from './routes';
 import { DataSource } from "typeorm"
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const start = () => {
@@ -26,7 +27,9 @@ const start = () => {
                 const app = express();
         
                 app.use(express.json());
+                app.use(cookieParser());
                 app.use(cors({
+                    credentials: true,
                     origin: ["http://localhost:3000"]
                 }));
         

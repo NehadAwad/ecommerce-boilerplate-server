@@ -5,8 +5,6 @@ import bcyptjs from "bcryptjs";
 import { sign, verify, JwtPayload } from "jsonwebtoken";
 
 
-
-
 export const Register = async (req: Request, res: Response) => {
     const body = req.body;
 
@@ -39,13 +37,13 @@ export const Login = async (req: Request, res: Response) => {
         where: { email: req.body.email }
     });
 
-    if(!user) {
+    if (!user) {
         return res.status(404).send({
             message: 'user not found'
         })
     }
 
-    if(! await bcyptjs.compare(req.body.password, user.password)) {
+    if (! await bcyptjs.compare(req.body.password, user.password)) {
         return res.status(404).send({
             message: 'user not found'
         })
@@ -60,27 +58,60 @@ export const Login = async (req: Request, res: Response) => {
 
     res.send({
         message: 'success'
-    }) 
+    })
 }
 
-export const AuthenticatedUser =async (req: Request, res: Response) => {
-    const jwt = req.cookies['jwt'];
-    
-    const payload = verify(jwt, process.env.JWT_SECRET);
+export const AuthenticatedUser = async (req: Request, res: Response) => {
+    const { password, ...user } = req['user'];
 
-    const jwtPayload = payload as JwtPayload;
-    console.log(jwtPayload.id);
-    if(!payload) {
-        return res.status(404).send({
-            message: 'unauthenticated'
-        })
-    }
-    
-    const user = await User.findOne({
-        where: { id: jwtPayload.id }
+    res.send(user);
+}
+
+export const Logout = async (req: Request, res: Response) => {
+    res.cookie('jwt', '', { maxAge: 0 });
+
+    return res.send({
+        message: 'success'
+    })
+}
+
+export const UpdateInfo = async (req: Request, res: Response) => {
+    const user = req['user'];
+    await User
+        .createQueryBuilder()
+        .update(User)
+        .set(req.body)
+        .where("id = :id", { id: user.id })
+        .execute();
+
+    const { password, ...data } = await User.findOne({
+        where: { id: user.id }
     });
-    
-    const { password, ...data} = user;
 
     res.send(data);
-} 
+
+}
+
+export const UpdatePassword = async (req: Request, res: Response) => {
+    const user = req['user'];
+
+    if (req.body.password !== user.password_confirm) {
+        return res.status(400).send({
+            message: "Password's do not match"
+        });
+    }
+
+    await User
+        .createQueryBuilder()
+        .update(User)
+        .set({ password: await bcyptjs.hash(req.body.password, 10) })
+        .where("id = :id", { id: user.id })
+        .execute();
+
+    const { password, ...data } = await User.findOne({
+        where: { id: user.id }
+    });
+
+    res.send(data);
+
+}

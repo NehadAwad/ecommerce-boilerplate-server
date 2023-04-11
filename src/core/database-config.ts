@@ -1,13 +1,18 @@
-import { ConnectionOptions } from 'typeorm';
 
-export const databaseConfig: ConnectionOptions = {
-  type: process.env.DB_TYPE,
+import dotenv from 'dotenv';
+import { DataSource } from "typeorm"
+dotenv.config();
+
+export const AppDataSource = new DataSource({
+  type: "mysql",
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
+  port: 3306,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  entities: [Photo],
+  database: process.env.DB_DATABASE,
+  entities: [
+      "src/entity/*.ts"
+  ],
   synchronize: true,
-  logging: false,
-};
+  logging: false
+});

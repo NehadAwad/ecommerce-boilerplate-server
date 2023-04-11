@@ -17,7 +17,6 @@ export const AuthMiddleware = async (req: Request, res: Response, next: Function
         const user = await User.findOne({
             where: { id: payload.id }
         });
-        console.log(user)
 
         req['user'] = user;
 

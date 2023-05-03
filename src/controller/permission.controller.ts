@@ -9,4 +9,4 @@ export const Permissions = async (req: Request, res: Response) => {
             message: "not found"
         })
     }
-}
+} 

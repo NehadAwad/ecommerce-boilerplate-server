@@ -3,15 +3,35 @@ import { User } from "../entity/user.entity";
 import bcyptjs from 'bcryptjs';
 
 export const Users = async (req: Request, res: Response) => {
-    const users = await User.find({
+    const take = 15;
+    const page = parseInt(req.query.page as string || '1')
+    // const users = await User.find({
+    //     relations: ['role']
+    // });
+    const [data, total] = await User.findAndCount({
+        take,
+        skip: (page - 1) * take,
         relations: ['role']
     });
 
-    res.send(users.map(user => {
-        const { password, ...data } = user;
+    // res.send(users.map(user => {
+    //     const { password, ...data } = user;
 
-        return data;
-    }));
+    //     return data;
+    // }));
+
+    res.send({
+        data: data.map(user => {
+            const { password, ...data } = user;
+    
+            return data;
+        }),
+        meta: {
+            total,
+            page,
+            last_page: Math.ceil(total/take)
+        }
+    });
 }
 
 export const CreateUser = async (req: Request, res: Response) => {

@@ -2,8 +2,20 @@ import { Request, Response } from "express";
 import { Product } from "../entity/product.entity";
 
 export const Products = async (req: Request, res: Response) => {
-    const products = await Product.find();
-    res.send(products);
+    const take = 15;
+    const page = parseInt(req.query.page as string || '1')
+    const [data, total] = await Product.findAndCount({
+        take,
+        skip: (page - 1) * take
+    });
+    res.send({
+        data: data,
+        meta: {
+            total,
+            page,
+            last_page: Math.ceil(total/take)
+        }
+    });
 }
 
 export const CreateProduct = async (req: Request, res: Response) => {
@@ -33,7 +45,6 @@ export const UpdateProduct = async (req: Request, res: Response) => {
         console.log(data)
 
         res.send(data);
-
 }
 
 export const DeleteProduct = async (req: Request, res: Response) => {

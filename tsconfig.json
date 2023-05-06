@@ -7,5 +7,7 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "Node"
+
   }
-}
+} 

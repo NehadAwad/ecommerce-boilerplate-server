@@ -1,5 +1,5 @@
-import { AppDataSource } from "./src/core/database-config";
-import { Product } from "./src/entity/product.entity";
+import { AppDataSource } from "../core/database-config";
+import { Product } from "../entity/product.entity";
 import { faker } from '@faker-js/faker';
 
 AppDataSource.initialize()

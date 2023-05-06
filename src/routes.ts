@@ -1,10 +1,12 @@
-import { Router } from "express";
+import { Request, Router } from "express";
 import { AuthenticatedUser, Login, Logout, Register, UpdateInfo, UpdatePassword } from "./controller/auth.controller";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { CreateUser, DeleteUser, GetUser, UpdateUser, Users } from "./controller/user.controller";
 import { Permissions } from "./controller/permission.controller";
 import { CreateRole, DeleteRole, GetRole, Roles, UpdateRole } from "./controller/role.controller";
 import { CreateProduct, DeleteProduct, GetProduct, Products, UpdateProduct } from "./controller/product.controller";
+import { Upload } from "./controller/image.controller";
+
 
 export const routes = ( router: Router) => {
 
@@ -41,6 +43,8 @@ export const routes = ( router: Router) => {
     router.put('/api/products/:id', AuthMiddleware, UpdateProduct);
     router.delete('/api/products/:id', AuthMiddleware, DeleteProduct);
 
-
+    //image
+    
+    router.post('/api/upload', AuthMiddleware, Upload)
 
 }

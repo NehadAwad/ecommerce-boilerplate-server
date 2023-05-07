@@ -1,8 +1,8 @@
 import { randomInt } from "crypto";
-import { AppDataSource } from "./src/core/database-config";
-import { Order } from "./src/entity/order.entity";
+import { AppDataSource } from "../core/database-config";
+import { Order } from "../entity/order.entity";
 import { faker } from '@faker-js/faker';
-import { OrderItem } from "./src/entity/order-item.entity";
+import { OrderItem } from "../entity/order-item.entity";
 
 AppDataSource.initialize()
     .then(async connection => {

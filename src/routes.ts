@@ -6,7 +6,7 @@ import { Permissions } from "./controller/permission.controller";
 import { CreateRole, DeleteRole, GetRole, Roles, UpdateRole } from "./controller/role.controller";
 import { CreateProduct, DeleteProduct, GetProduct, Products, UpdateProduct } from "./controller/product.controller";
 import { Upload } from "./controller/image.controller";
-import { Orders } from "./controller/order.controller";
+import { Export, Orders } from "./controller/order.controller";
 
 
 export const routes = ( router: Router) => {
@@ -44,11 +44,13 @@ export const routes = ( router: Router) => {
     router.put('/api/products/:id', AuthMiddleware, UpdateProduct);
     router.delete('/api/products/:id', AuthMiddleware, DeleteProduct);
 
-    //image
+    // image
     router.post('/api/upload', AuthMiddleware, Upload);
     router.use('/api/uploads', express.static('./uploads'));
 
-    //orders
-    router.get('/api/orders', AuthMiddleware, Orders)
+    // orders
+    router.get('/api/orders', AuthMiddleware, Orders);
+    router.get('/api/export', AuthMiddleware, Export)
+
 
 }

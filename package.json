@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "roles:seed": "ts-node src/seeder/role.seeder.ts",
-    "products:seed": "ts-node products.seeder.ts"
+    "products:seed": "ts-node products.seeder.ts",
+    "orders:seed": "ts-node order.seeder.ts"
+
   },
   "keywords": [],
   "author": "",

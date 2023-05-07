@@ -1,4 +1,4 @@
-import { Request, Router } from "express";
+import express, { Request, Router } from "express";
 import { AuthenticatedUser, Login, Logout, Register, UpdateInfo, UpdatePassword } from "./controller/auth.controller";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { CreateUser, DeleteUser, GetUser, UpdateUser, Users } from "./controller/user.controller";
@@ -6,6 +6,7 @@ import { Permissions } from "./controller/permission.controller";
 import { CreateRole, DeleteRole, GetRole, Roles, UpdateRole } from "./controller/role.controller";
 import { CreateProduct, DeleteProduct, GetProduct, Products, UpdateProduct } from "./controller/product.controller";
 import { Upload } from "./controller/image.controller";
+import { Orders } from "./controller/order.controller";
 
 
 export const routes = ( router: Router) => {
@@ -26,17 +27,17 @@ export const routes = ( router: Router) => {
     router.put('/api/users/:id', AuthMiddleware, UpdateUser);
     router.delete('/api/users/:id', AuthMiddleware, DeleteUser);
 
-    //permission
+    // permission
     router.get('/api/permissions', AuthMiddleware, Permissions);   
 
-    //role
+    // role
     router.get('/api/roles', AuthMiddleware, Roles);
     router.post('/api/roles', AuthMiddleware, CreateRole);
     router.get('/api/roles/:id', AuthMiddleware, GetRole);
     router.put('/api/roles/:id', AuthMiddleware, UpdateRole);
     router.delete('/api/roles/:id', AuthMiddleware, DeleteRole);
 
-    //products
+    // products
     router.get('/api/products', AuthMiddleware, Products);
     router.post('/api/products', AuthMiddleware, CreateProduct);
     router.get('/api/products/:id', AuthMiddleware, GetProduct);
@@ -44,7 +45,10 @@ export const routes = ( router: Router) => {
     router.delete('/api/products/:id', AuthMiddleware, DeleteProduct);
 
     //image
-    
-    router.post('/api/upload', AuthMiddleware, Upload)
+    router.post('/api/upload', AuthMiddleware, Upload);
+    router.use('/api/uploads', express.static('./uploads'));
+
+    //orders
+    router.get('/api/orders', AuthMiddleware, Orders)
 
 }

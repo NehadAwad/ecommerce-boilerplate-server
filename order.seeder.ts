@@ -8,13 +8,9 @@ AppDataSource.initialize()
     .then(async connection => {
         for(let i=0; i < 30; i++) {
             const order = await Order.save({
-                // title: faker.name.firstName(),
-                // description: faker.lorem.words(20),
-                // image: faker.image.abstract(200, 200, true),
-                // price: faker.datatype.float()
                 first_name: faker.name.firstName(),
                 last_name: faker.name.lastName(),
-                email: faker.internet.email()
+                email: faker.internet.email(),
             });
 
             for(let j = 0; j< randomInt(1, 5); j++) {
@@ -31,3 +27,8 @@ AppDataSource.initialize()
         process.exit(0);
     })
     .catch((error) => console.log(error)) 
+
+    // select date_format(o.created_at, '%Y-%m-%d') as date, sum(oi.price * oi.quantity) as sum
+    // from admin_ts.order o
+    // join admin_ts.order_item oi on o.id = oi.order_id
+    // group by date

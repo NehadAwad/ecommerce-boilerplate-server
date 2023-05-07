@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Order } from "../entity/order.entity";
 import { Parser } from "json2csv";
 import { OrderItem } from "../entity/order-item.entity";
+import { AppDataSource } from "../core/database-config";
 
 export const Orders =async (req: Request, res: Response) => {
     const take = 15;
@@ -66,4 +67,15 @@ export const Export =async (req:  Request, res: Response) => {
      res.header('Content-Type', 'text/csv');
      res.attachment('orders.csv');
      res.send(csv);
+}
+
+export const Chart = async (req: Request, res: Response) => {
+    const result = await AppDataSource.query(
+        `select date_format(o.created_at, '%Y-%m-%d') as date, sum(oi.price * oi.quantity) as sum
+        from admin_ts.order o
+        join admin_ts.order_item oi on o.id = oi.order_id
+        group by date `
+    )
+
+    res.send(result);
 }

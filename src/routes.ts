@@ -20,7 +20,6 @@ export const routes = (router: Router) => {
     router.put('/api/users/info', AuthMiddleware, UpdateInfo);
     router.put('/api/users/password', AuthMiddleware, UpdatePassword);
 
-
     // user
     router.get('/api/users', AuthMiddleware, PermissionMiddleware('users'), Users);
     router.post('/api/users', AuthMiddleware, PermissionMiddleware('users'), CreateUser);
